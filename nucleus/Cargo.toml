@@ -16,7 +16,7 @@ harness = false
 
 
 [dependencies]
-nucleus_macros = { version = "1.0.0", path = "../nucleus_macros" }
+nucleus_macros = { version = "1.0.0", path = "../nucleus_macros", registry = "gitea" }
 tokio = { version = "1.38.0", features = [
     "rt-multi-thread",
     "rt",
