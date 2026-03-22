@@ -1,0 +1,5 @@
+target/
+grafana-storage/
+qwdata/
+flamegraph.svg
+perf.data*

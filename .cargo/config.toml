@@ -1,0 +1,8 @@
+[registries.gitea]
+index = "sparse+https://git.uncollap.se/api/packages/uncollapse_public/cargo/" # Sparse index
+
+[net]
+git-fetch-with-cli = true
+
+[target.x86_64-unknown-linux-gnu]
+rustflags=["-Clink-arg=-Wl,-z,higher-ranked-assumptions,-z,nostart-stop-gc"]

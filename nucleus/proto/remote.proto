@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package nucleus.remote;
+
+message NamedActorDiscoveryRequest {
+  // @better
+  string ActorName = 1;
+  // @better
+  optional string ActorType = 2;
+}
+message NamedActorDiscoveryResponse {
+  // @snowflake<Actor>
+  optional fixed64 ActorId = 1;
+  // @better
+  optional string ActorType = 2;
+}
+
+message RemoteNodeRegister {
+  uint32 NodeId = 1;
+  string Address = 2;
+  uint64 Flags = 3;
+}
+
+message RemoteNodeUnregister { uint32 NodeId = 1; }
+
+message RemoteNodeHeartbeat {
+  uint32 NodeId = 1;
+  repeated uint32 ConnectedNodes = 2;
+}

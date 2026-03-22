@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package nucleus.pubsub;
+
+message PubsubMessage {
+  // @better
+  string Topic = 1;
+  // @better
+  string ActorName = 2;
+  oneof Payload {
+    bytes PubsubPayload = 3;
+    bool PublisherStopped = 4;
+    uint32 RemoteNodeDied = 5;
+  }
+  uint64 MessageId = 6;
+}
+
+message PubsubSubscribe {
+  // @better
+  string Topic = 1;
+  // @better
+  string ActorName = 2;
+  uint32 SubscriberNodeId = 3;
+}
+
+message PubsubUnsubscribe {
+  // @better
+  string Topic = 1;
+  // @better
+  string ActorName = 2;
+  uint32 SubscriberNodeId = 3;
+}
+
+message PublisherMoved {
+  // @better
+  string Topic = 1;
+  // @better
+  string ActorName = 2;
+  // @snowflake<Actor>
+  uint32 NewPublisherId = 3;
+}

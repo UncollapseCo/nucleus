@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package nucleus.debug;
+import "core.proto";
+
+message GetSerialized {}
+
+message ListActors { bool global = 1; }
+
+message ActorList { repeated ActorInfo actors = 1; }
+
+message ActorInfo {
+  string name = 1;
+  // @snowflake<Actor>
+  fixed64 id = 2;
+  optional string actor_type = 3;
+}
+
+message SerializedRemoteNode {
+  nucleus.core.RemoteHandshake handshake = 1;
+  string status = 2;
+  uint32 response_waiter_count = 3;
+  uint32 send_buffer_length = 4;
+}
+message SerializedMover {
+  map<fixed64, MoverLeavingMoverData> leaving_movers = 1;
+  map<string, MoverArrivingMoverData> arriving_movers = 2;
+  repeated string registered_movable_actors = 3;
+}
+
+message MoverLeavingMoverData {
+  // @snowflake<Actor>
+  fixed64 actor_id = 1;
+  string actor_type = 2;
+  string actor_name = 3;
+  repeated string actor_subs = 4;
+  uint32 destination_node_id = 5;
+  uint32 fwd_msg_queue_length = 6;
+}
+
+message MoverArrivingMoverData {
+  string actor_type = 1;
+  string actor_name = 2;
+  // @snowflake<Actor>
+  optional fixed64 arriving_actor_id = 3;
+}

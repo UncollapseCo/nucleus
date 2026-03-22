@@ -1,0 +1,115 @@
+syntax = "proto3";
+
+package nucleus.core;
+import "remote.proto";
+
+message RemoteMessage {
+  // @snowflake<Actor>
+  // None if registry actor (previously 0)
+  optional fixed64 ActorId = 1;
+  // @snowflake<Request>
+  fixed64 RequestId = 2;
+
+  bytes ActorType = 3;
+  bytes MessageType = 4;
+
+  // 0 if expects response payload, 1 if expects notify ack, 2 if expects
+  // nothing, 3 if payload because of moving related forward
+  uint32 ResponseMode = 5;
+
+  bytes Payload = 6;
+}
+
+message RemoteResponse {
+  // @snowflake<Request>
+  fixed64 RequestId = 1;
+  oneof response {
+    bytes Payload = 2;
+    bytes Error = 3;
+    bool NotifyAck = 4;
+  }
+}
+
+message RemoteHandshake {
+  uint32 NodeId = 1;
+  uint64 Seq = 2;
+  repeated nucleus.remote.RemoteNodeRegister Nodes = 3;
+  string ListenAddress = 4;
+  uint64 NodeFlags = 5;
+  uint64 InstanceId = 6;
+  // @better
+  string Cluster = 7;
+}
+
+message RemoteHandshakeResponse {
+  uint32 NodeId = 1;
+  uint64 Seq = 2;
+  repeated nucleus.remote.RemoteNodeRegister Nodes = 3;
+  string ListenAddress = 4;
+  uint64 NodeFlags = 5;
+  uint64 InstanceId = 6;
+  // @better
+  string Cluster = 7;
+}
+
+message RemoteClientHandshake {
+  string name = 1;
+  uint64 seq = 2;
+}
+
+message RemoteResume {
+  uint32 NodeId = 1;
+  uint64 LastAckedSeq = 2;
+  uint64 InstanceId = 3;
+}
+
+message RemoteShutdown { bool ReadyToClose = 1; }
+
+message WireMessage {
+  uint64 seq = 1;
+  uint64 seq_ack = 2;
+
+  oneof message {
+    RemoteMessage remote_message = 3;
+    RemoteResponse remote_response = 4;
+    RemoteShutdown remote_shutdown = 8;
+
+    BatchMessage batch_message = 5;
+  }
+
+  // optional string TraceParent = 9;
+  reserved 9;
+  // optional string TraceState = 10;
+  reserved 10;
+  optional TraceParent trace_parent = 11;
+}
+
+message BatchMessage { repeated BatchMessageInner messages = 1; }
+
+message BatchMessageInner {
+  oneof message {
+    RemoteMessage remote_message = 1;
+    RemoteResponse remote_response = 2;
+  }
+
+  // optional string TraceParent = 3;
+  reserved 3;
+  // optional string TraceState = 4;
+  reserved 4;
+  optional TraceParent trace_parent = 5;
+}
+
+message HandshakeMessage {
+  oneof message {
+    RemoteHandshake handshake = 1;
+    RemoteResume resume = 2;
+    RemoteClientHandshake client_handshake = 3;
+  }
+}
+
+message TraceParent {
+  fixed64 TraceIdA = 1;
+  fixed64 TraceIdB = 2;
+
+  fixed64 SpanId = 3;
+}

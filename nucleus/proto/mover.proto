@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package nucleus.mover;
+
+message ActorMoveInIntent {
+  // @better
+  string name = 1;
+  // @better
+  string actor_type = 2;
+  repeated PubsubRef actor_subs = 3;
+}
+
+message ActorMoveInPayload {
+  bytes actor_serialized = 1;
+  // @better
+  string name = 2;
+  // @better
+  string actor_type = 3;
+  repeated PubsubRef actor_subs_numbered = 4;
+  map<string, NodeList> outgoing_seqs = 5;
+}
+
+message ActorMoveInResponse {
+  oneof response {
+    string error = 1;
+    // @snowflake<Actor>
+    fixed64 actor_id = 2;
+  }
+}
+
+message ActorMoveOutFinished {
+  // @snowflake<Actor>
+  fixed64 actor_id = 1;
+}
+
+message PubsubRef {
+  // @better
+  string topic = 1;
+  // @better
+  string actor_name = 2;
+  optional uint64 message_id = 3;
+  // @snowflake<Actor>
+  optional fixed64 publisher_actor_id = 4;
+}
+
+message NodeList {
+  repeated uint32 node_ids = 1;
+  uint64 seq = 2;
+}
+
+message SerializedActorRef {
+  // @snowflake<Actor>
+  optional fixed64 actor_id = 1;
+  // @better
+  optional string name = 2;
+  // @better
+  string actor_type = 3;
+}
+
+message SerializedRatelimitStore {
+  map<uint64, SerializedRatelimitBucket> buckets = 1;
+}
+message SerializedRatelimitBucket {
+  uint64 time_until_reset = 1; // millis
+  uint64 tokens_remaining = 2;
+}

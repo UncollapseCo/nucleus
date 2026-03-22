@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package nucleus.client;
+import "remote.proto";
+
+message ClientRemoteMessage {
+  optional string ActorType = 1;
+  string MessageType = 2;
+
+  // 0 if expects response payload, 1 if expects notify ack, 2 if expects
+  // nothing, 3 if payload because of moving related forward
+  uint32 ResponseMode = 3;
+
+  oneof recipient {
+    // @snowflake<Actor>
+    fixed64 ActorId = 4;
+    string ActorName = 5;
+    uint32 Registry = 7;
+  }
+
+  bytes Payload = 6;
+}
+
+message ClientRemoteMessageResponse {
+  oneof response {
+    bytes Payload = 1;
+    bytes Error = 2;
+    bool NotifyAck = 3;
+  }
+}
+
+message ClientCommand {
+  uint64 CommandId = 1;
+
+  oneof inner {
+    ClientRemoteMessage RemoteMessage = 2;
+    nucleus.remote.NamedActorDiscoveryRequest NamedDiscoveryRequest = 3;
+    // TODO: pubsub sub/unsub here
+  }
+}
+
+message ClientCommandResponse {
+  uint64 CommandId = 1;
+  ClientRemoteMessageResponse response = 2;
+}
+
+message ClientResponseMessage {
+  oneof message {
+    ClientCommandResponse command_response = 1;
+    // TODO: pubsub message here
+  }
+}
