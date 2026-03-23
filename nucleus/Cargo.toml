@@ -3,6 +3,7 @@ name = "nucleus"
 version = "1.0.0"
 edition = "2024"
 authors = ["Red Kalab <red@uncollapse.com>", "Ash <folf@uncollapse.com>"]
+license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
