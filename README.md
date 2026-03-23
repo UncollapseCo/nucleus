@@ -1,6 +1,6 @@
 # Nucleus
 
-Nucleus is a library to enable distributed actor systems. Here is a hello world
+Nucleus is a library running at the core of [Osmium](https://osmium.chat) to enable distributed actor systems. Here is a hello world example.
 
 ```rs
 struct HelloWorldActor {
